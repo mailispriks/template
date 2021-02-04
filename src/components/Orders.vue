@@ -1,17 +1,66 @@
 <template>
   <div>
     <h2 class="mb-3">Tellimused</h2>
+    <!-- <p>Count: {{ count }}</p>
+    <button @click="addCount()">+</button>
+    <button @click="removeCount()">-</button> -->
+
+    <!-- Tellimuse tabel -->
+    <b-table striped hover :items="items" :fields="fields">
+
+      <template #cell(price)="data">
+        <b class="text-info">{{ data.value }} EUR</b>
+      </template>
+
+      <template #cell(actions)="data">
+        <b-button variant="success" @click="showProducts(data.item.products)">Vaata tooteid</b-button>
+      </template>
+
+    </b-table>
+
+    <!-- Toote tabel -->
+    <!-- TODO: Add real data -->
+    <b-table striped hover :items="productItems" :fields="productFields">
+    </b-table>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Orders',
   data() {
     return {
+      count: 0,
+      fields: ['orderNumber', 'orderDate', 'status', { key: 'price', label: 'Hind' }, 'actions'],
+      items: [],
+      productFields: [],
+      productItems: []
     }
   },
   async created () {
+    const orders = await axios({
+      url: 'api/orders',
+      method: 'GET',
+      headers: {}
+    })
+    console.log('orders', orders)
+
+    this.items = orders.data
+  },
+  methods: {
+    showProducts (products) {
+
+    },
+    addCount () {
+      console.log('Praegune count:', this.count)
+      this.count++
+    },
+    removeCount () {
+      console.log('Praegune count:', this.count)
+      this.count--
+    }
   }
 }
 </script>
