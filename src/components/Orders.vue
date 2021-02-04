@@ -13,15 +13,24 @@
       </template>
 
       <template #cell(actions)="data">
-        <b-button variant="success" @click="showProducts(data.item.products)">Vaata tooteid</b-button>
+        <b-button v-b-modal.modal-1 variant="success" @click="showProducts(data.item.products, data.item)">Vaata tooteid</b-button>
       </template>
-
     </b-table>
+
+    
 
     <!-- Toote tabel -->
-    <!-- TODO: Add real data -->
-    <b-table striped hover :items="productItems" :fields="productFields">
-    </b-table>
+
+    <b-modal id="modal-1" :title="productTableTitle" size="xl">
+      <b-table striped hover :items="productItems" :fields="productFields">
+
+        <template #cell(price)="data">
+          <b class="text-info">{{ data.value }} EUR</b>
+        </template>
+
+      </b-table>
+    </b-modal>
+
   </div>
 </template>
 
@@ -35,8 +44,9 @@ export default {
       count: 0,
       fields: ['orderNumber', 'orderDate', 'status', { key: 'price', label: 'Hind' }, 'actions'],
       items: [],
-      productFields: [],
-      productItems: []
+      productFields: ['productCode', 'name', 'category', 'amount', 'price'],
+      productItems: [],
+      productTableTitle: 'Pealkiri'
     }
   },
   async created () {
@@ -50,8 +60,11 @@ export default {
     this.items = orders.data
   },
   methods: {
-    showProducts (products) {
-
+    showProducts (products, item) {
+      console.log('products', products)
+      this.productItems = products
+      console.log(item)
+      this.productTableTitle = item.orderNumber
     },
     addCount () {
       console.log('Praegune count:', this.count)
